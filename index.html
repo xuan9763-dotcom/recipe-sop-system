@@ -179,6 +179,7 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
   .ing-qty { font-weight: 600; color: var(--primary-dark); white-space: nowrap; }
   .ing-unit { color: var(--text-light); }
   .ing-cost { text-align: right; font-family: monospace; }
+  .ing-subtotal { text-align: right; font-family: monospace; font-weight: 600; color: var(--primary-dark); }
   .cost-input {
     width: 65px; padding: 3px 5px; border: 1px solid var(--border); border-radius: 4px;
     font-size: 12px; text-align: right; font-family: monospace;
@@ -234,8 +235,9 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
   }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .ing-row { display: grid; grid-template-columns: 60px 80px 1fr 30px; gap: 8px; margin-bottom: 6px; align-items: center; }
+  .ing-row { display: grid; grid-template-columns: 55px 70px 1fr 75px 28px; gap: 6px; margin-bottom: 6px; align-items: center; }
   .ing-row input { padding: 6px 8px; font-size: 12px; }
+  .ing-row .ing-cost-input { width: 100%; text-align: right; font-family: monospace; }
   .ing-row .remove-ing { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; }
   .step-row { display: grid; grid-template-columns: 1fr 30px; gap: 8px; margin-bottom: 6px; align-items: start; }
   .step-row textarea { padding: 6px 8px; font-size: 12px; resize: vertical; min-height: 40px; }
@@ -371,7 +373,7 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
     .form-group input, .form-group select, .form-group textarea { 
       padding: 8px 10px; font-size: 13px; 
     }
-    .ingredient-row, .step-row { grid-template-columns: 60px 70px 1fr 30px !important; gap: 6px !important; }
+    .ingredient-row, .step-row { grid-template-columns: 50px 60px 1fr 65px 28px !important; gap: 5px !important; }
     .step-row { grid-template-columns: 30px 1fr 80px 30px !important; }
     .ingredient-row input, .step-row input { padding: 6px 8px; font-size: 12px; }
     .remove-btn { width: 28px; height: 28px; font-size: 14px; }
@@ -492,10 +494,15 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       gap: 8px !important;
     }
     
-    /* Hide cost column in ingredients table */
+    /* Show cost columns in ingredients table, hide inputs */
     .ing-table th:nth-child(4),
     .ing-table td:nth-child(4),
-    .ing-cost, .cost-input {
+    .ing-table th:nth-child(5),
+    .ing-table td:nth-child(5),
+    .ing-cost, .ing-subtotal {
+      display: table-cell !important;
+    }
+    .cost-input {
       display: none !important;
     }
     
@@ -3327,6 +3334,8 @@ const I18N = {
     quantity: "Quantity",
     unit: "Unit",
     cost: "Cost",
+    unitCost: "Unit Cost",
+    subtotal: "Subtotal",
     step: "Step",
     description: "Description",
     prep: "Prep",
@@ -3409,6 +3418,8 @@ const I18N = {
     quantity: "数量",
     unit: "单位",
     cost: "成本",
+    unitCost: "单价",
+    subtotal: "小计",
     step: "步骤",
     description: "说明",
     prep: "准备",
@@ -9241,6 +9252,10 @@ function openDetail(id) {
         <div class="label">${t('totalCost')}</div>
         <div class="value" id="totalCost">RM 0.00</div>
       </div>
+      <div class="cost-item">
+        <div class="label">${t('costPerServing')}</div>
+        <div class="value" id="costPerServing">RM 0.00</div>
+      </div>
     </div>
   </div>`;
   
@@ -9248,19 +9263,29 @@ function openDetail(id) {
   html += `<div class="section">
     <div class="section-title">📋 ${t('ingredients')}</div>
     <table class="ing-table">
-      <thead><tr><th style="width:80px;">${t('quantity')}</th><th style="width:70px;">${t('unit')}</th><th>${t('ingredient')}</th><th style="width:100px;text-align:right;">Cost (RM)</th></tr></thead>
+      <thead><tr><th style="width:70px;">${t('quantity')}</th><th style="width:60px;">${t('unit')}</th><th>${t('ingredient')}</th><th style="width:90px;text-align:right;">${t('unitCost')} (RM)</th><th style="width:90px;text-align:right;">${t('subtotal')} (RM)</th></tr></thead>
       <tbody id="ingTableBody">`;
   
+  let totalCost = 0;
   r.ingredients.forEach((ing, i) => {
+    const qtyNum = parseFloat(ing.qty) || 0;
+    const costNum = parseFloat(ing.cost) || 0;
+    const subtotal = qtyNum * costNum;
+    totalCost += subtotal;
     html += `<tr>
-      <td class="ing-qty" data-base-qty="${ing.qty}">${ing.qty}</td>
+      <td class="ing-qty" data-base-qty="${ing.qty}" data-cost="${costNum}">${ing.qty}</td>
       <td class="ing-unit">${ing.unit}</td>
       <td>${translateIngredient(ing.name)}</td>
-      <td class="ing-cost"><input type="number" class="cost-input" data-idx="${i}" step="0.01" min="0" placeholder="0.00" oninput="updateCost()"></td>
+      <td class="ing-cost" style="text-align:right;font-family:monospace;">${costNum.toFixed(2)}</td>
+      <td class="ing-subtotal" style="text-align:right;font-family:monospace;font-weight:600;">${subtotal.toFixed(2)}</td>
     </tr>`;
   });
   
-  html += `</tbody></table></div>`;
+  html += `</tbody></table>
+    <div style="text-align:right;margin-top:8px;padding:8px 12px;background:var(--primary-light);border-radius:6px;">
+      <span style="font-weight:600;color:var(--primary-dark);">${t('totalCost')}:</span>
+      <span id="detailTotalCost" style="font-family:monospace;font-size:16px;font-weight:700;color:var(--primary-dark);margin-left:8px;">RM ${totalCost.toFixed(2)}</span>
+    </div></div>`;
   
   // Steps
   html += `<div class="section">
@@ -9288,6 +9313,15 @@ function openDetail(id) {
   html += `</div>`;
   
   body.innerHTML = html;
+  
+  // Calculate and display costs
+  const recipeTotalCost = calculateRecipeCost(r);
+  const servings = r.yield || 1;
+  const totalEl = document.getElementById('totalCost');
+  if (totalEl) totalEl.textContent = 'RM ' + recipeTotalCost.toFixed(2);
+  const perServingEl = document.getElementById('costPerServing');
+  if (perServingEl) perServingEl.textContent = 'RM ' + (recipeTotalCost / servings).toFixed(2);
+  
   document.getElementById('detailModal').classList.add('show');
   document.body.classList.add('modal-open');
 }
@@ -9308,15 +9342,61 @@ function changeServings(delta) {
       td.textContent = newQty;
     }
   });
+
+  // Update costs based on new servings
+  if (currentRecipe) {
+    const baseCost = calculateRecipeCost(currentRecipe);
+    const baseServings = currentRecipe.yield || 1;
+    const newServings = currentServings || baseServings;
+    const scale = newServings / baseServings;
+    const newTotal = baseCost * scale;
+    const totalEl = document.getElementById('totalCost');
+    if (totalEl) totalEl.textContent = 'RM ' + newTotal.toFixed(2);
+    const perServingEl = document.getElementById('costPerServing');
+    if (perServingEl) perServingEl.textContent = 'RM ' + (newTotal / newServings).toFixed(2);
+    const detailTotalEl = document.getElementById('detailTotalCost');
+    if (detailTotalEl) detailTotalEl.textContent = 'RM ' + newTotal.toFixed(2);
+    
+    // Update subtotals in table
+    document.querySelectorAll('#ingTableBody tr').forEach(row => {
+      const qtyEl = row.querySelector('.ing-qty');
+      const subtotalEl = row.querySelector('.ing-subtotal');
+      if (qtyEl && subtotalEl) {
+        const baseQty = parseFloat(qtyEl.getAttribute('data-base-qty')) || 0;
+        const cost = parseFloat(qtyEl.getAttribute('data-cost')) || 0;
+        const newQty = baseQty * scale;
+        qtyEl.textContent = newQty % 1 === 0 ? newQty.toString() : newQty.toFixed(2);
+        subtotalEl.textContent = (newQty * cost).toFixed(2);
+      }
+    });
+  }
 }
 
 function updateCost() {
   let total = 0;
-  document.querySelectorAll('.cost-input').forEach(input => {
-    const val = parseFloat(input.value);
-    if (!isNaN(val)) total += val;
+  document.querySelectorAll('#ingTableBody tr').forEach(row => {
+    const qtyEl = row.querySelector('.ing-qty');
+    const costEl = row.querySelector('.ing-cost');
+    if (qtyEl && costEl) {
+      const qty = parseFloat(qtyEl.textContent) || 0;
+      const cost = parseFloat(costEl.textContent) || 0;
+      total += qty * cost;
+    }
   });
-  document.getElementById('totalCost').textContent = 'RM ' + total.toFixed(2);
+  const totalEl = document.getElementById('totalCost');
+  if (totalEl) totalEl.textContent = 'RM ' + total.toFixed(2);
+  const detailTotalEl = document.getElementById('detailTotalCost');
+  if (detailTotalEl) detailTotalEl.textContent = 'RM ' + total.toFixed(2);
+}
+
+function calculateRecipeCost(recipe) {
+  let total = 0;
+  (recipe.ingredients || []).forEach(ing => {
+    const qty = parseFloat(ing.qty) || 0;
+    const cost = parseFloat(ing.cost) || 0;
+    total += qty * cost;
+  });
+  return total;
 }
 
 function printSOP() {
@@ -9389,7 +9469,7 @@ function editRecipe(id) {
   const ingList = document.getElementById('ingredientsList');
   ingList.innerHTML = '';
   r.ingredients.forEach(ing => {
-    addIngredientRow(ing.qty, ing.unit, ing.name);
+    addIngredientRow(ing.qty, ing.unit, ing.name, ing.cost || '');
   });
   
   // Populate steps
@@ -9424,7 +9504,7 @@ function editCurrentRecipe() {
   }
 }
 
-function addIngredientRow(qty='', unit='', name='') {
+function addIngredientRow(qty='', unit='', name='', cost='') {
   const list = document.getElementById('ingredientsList');
   const units = getAllUnits();
   const unitOptions = units.map(u => `<option value="${u}" ${u === unit ? 'selected' : ''}>${u}</option>`).join('');
@@ -9434,6 +9514,7 @@ function addIngredientRow(qty='', unit='', name='') {
     <input type="text" placeholder="Qty" value="${qty}" class="ing-qty-input">
     <select class="ing-unit-input">${unitOptions}<option value="">+ Unit</option></select>
     <input type="text" placeholder="Ingredient name" value="${name}" class="ing-name-input">
+    <input type="number" placeholder="Cost RM" value="${cost}" class="ing-cost-input" step="0.01" min="0">
     <button class="remove-ing" onclick="this.parentElement.remove()">×</button>
   `;
   list.appendChild(row);
@@ -9573,8 +9654,10 @@ function saveRecipe() {
     const qty = row.querySelector('.ing-qty-input').value.trim();
     const unit = row.querySelector('.ing-unit-input').value;
     const ingName = row.querySelector('.ing-name-input').value.trim();
+    const costVal = row.querySelector('.ing-cost-input');
+    const cost = costVal ? costVal.value.trim() : '';
     if (ingName) {
-      ingredients.push({qty, unit, name: ingName});
+      ingredients.push({qty, unit, name: ingName, cost: cost || '0'});
     }
   });
   
@@ -10057,16 +10140,25 @@ function exportToExcel(recipes) {
       row++;
       
       // Table header
-      data.push(['No.', 'Ingredient', 'Quantity', 'Unit', 'Cost (RM)', 'Notes']);
+      data.push(['No.', 'Ingredient', 'Quantity', 'Unit', 'Unit Cost (RM)', 'Subtotal (RM)']);
       heights.push({ hpt: 24 });
       row++;
       
       const ingStartRow = row;
+      let recipeTotal = 0;
       (r.ingredients || []).forEach((ing, i) => {
-        data.push([i + 1, ing.name || '', ing.qty || '', ing.unit || '', '', '']);
+        const qtyNum = parseFloat(ing.qty) || 0;
+        const costNum = parseFloat(ing.cost) || 0;
+        const subtotal = qtyNum * costNum;
+        recipeTotal += subtotal;
+        data.push([i + 1, ing.name || '', ing.qty || '', ing.unit || '', costNum.toFixed(2), subtotal.toFixed(2)]);
         heights.push({ hpt: 20 });
         row++;
       });
+      // Total cost row
+      data.push(['', '', '', '', 'Total:', recipeTotal.toFixed(2)]);
+      heights.push({ hpt: 22 });
+      row++;
       
       // Spacer
       data.push(['', '', '', '', '', '']);
