@@ -923,7 +923,7 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       🍗 Ayam Gepuk <span class="count">0</span>
     </button><button class="cat-btn  " onclick="setCategory('other')">
       🍽️ Others <span class="count">7</span>
-    </button><button class="cat-add-btn" onclick="openCatModal()">+ Category</button></div>
+    </button><button class="cat-add-btn" onclick="openCatModal()">+ Category</button><button class="cat-add-btn" onclick="openCategoryManager()" style="background:var(--primary-light);color:var(--primary-dark);">📋 Manage</button></div>
 </div>
 
 <div class="main">
@@ -3199,6 +3199,24 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
   </div>
 </div>
 
+
+<!-- Category Management Modal -->
+<div class="modal-overlay" id="categoryModal" onclick="if(event.target===this)closeModal('categoryModal')">
+  <div class="modal small">
+    <div class="modal-header">
+      <h3>📋 <span data-i18n="manageCategories">Manage Categories</span></h3>
+      <button class="modal-close" onclick="closeModal('categoryModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px;color:var(--text-light);font-size:13px;">⬆️⬇️ <span data-i18n="dragToReorder">Drag to reorder categories</span></p>
+      <div id="categoryOrderList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal('categoryModal')"><span data-i18n="done">Done</span></button>
+    </div>
+  </div>
+</div>
+
 <!-- Add/Edit Recipe Modal -->
 <div class="modal-overlay" id="formModal">
   <div class="modal wide">
@@ -3307,6 +3325,11 @@ const I18N = {
     duplicate: "Duplicate",
     duplicateRecipe: "Duplicate Recipe",
     recipeDuplicated: "Recipe duplicated! Edit and save.",
+    manageCategories: "Manage Categories",
+    moveUp: "Move Up",
+    moveDown: "Move Down",
+    categoryOrder: "Category Order",
+    dragToReorder: "Drag to reorder categories",
     all: "All",
     noRecipesFound: "No recipes found. Try a different search or category.",
     printSOP: "Print SOP",
@@ -3394,6 +3417,11 @@ const I18N = {
     duplicate: "复制",
     duplicateRecipe: "复制食谱",
     recipeDuplicated: "食谱已复制！请编辑并保存。",
+    manageCategories: "管理分类",
+    moveUp: "上移",
+    moveDown: "下移",
+    categoryOrder: "分类顺序",
+    dragToReorder: "拖拽调整分类顺序",
     all: "全部",
     noRecipesFound: "未找到食谱，请尝试其他搜索或分类。",
     printSOP: "打印SOP",
@@ -9137,11 +9165,85 @@ const BUILTIN_RECIPES = [
       "For side dishes, put 30g of edamame and 40g of Japanese egg roll (tamagoyaki).",
       "For serving, place the main dish, teapot, and side dishes on a tray to serve to the customer."
     ]
+  },
+  {
+    "id": "b104",
+    "name": "Salmon Chazuke",
+    "category": "chazuke",
+    "icon": "🍵",
+    "yield": 1,
+    "prepTime": 10,
+    "cookTime": 15,
+    "ingredients": [
+      {
+        "qty": "200",
+        "unit": "g",
+        "name": "Jap Rice",
+        "cost": "1.10"
+      },
+      {
+        "qty": "6.5",
+        "unit": "g",
+        "name": "Ajido Forikake Okaka",
+        "cost": "0.40"
+      },
+      {
+        "qty": "4",
+        "unit": "g",
+        "name": "Nagatanien Arare (Rice Cracker)",
+        "cost": "0.50"
+      },
+      {
+        "qty": "0.5",
+        "unit": "g",
+        "name": "Seaweed",
+        "cost": "0.00"
+      },
+      {
+        "qty": "3",
+        "unit": "g",
+        "name": "Hondashi Bonito Seasoning Powder",
+        "cost": "0.10"
+      },
+      {
+        "qty": "1",
+        "unit": "pack",
+        "name": "Genmaicha Tea Bag",
+        "cost": "0.45"
+      },
+      {
+        "qty": "30",
+        "unit": "g",
+        "name": "Edamame",
+        "cost": "0.45"
+      },
+      {
+        "qty": "40",
+        "unit": "g",
+        "name": "Egg Roll",
+        "cost": "0.40"
+      },
+      {
+        "qty": "1",
+        "unit": "pcs",
+        "name": "Salmon(80g)",
+        "cost": "4.50"
+      }
+    ],
+    "steps": [
+      "First, add 200g of Japanese rice.",
+      "Then, sprinkle 6.5g (1 tbsp) of Ajido Furikake Okaka over the rice.",
+      "Next, add 4g (0.5 tbsp) of Nagatanien Arare (rice crackers) on top.",
+      "Finally, top with 0.5g of shredded seaweed for decoration.",
+      "In a teapot, combine 1 Genmaicha tea bag and Hondashi, then pour in hot water.",
+      "For side dishes, put 30g of edamame and 40g of Japanese egg roll (tamagoyaki).",
+      "For serving, place the main dish, teapot, and side dishes on a tray to serve to the customer."
+    ]
   }
 
 ];
 
-const BUILTIN_CATEGORIES = [{"id": "all", "name": "All", "icon": "🍽️"}, {"id": "pasta", "name": "Pasta", "icon": "🍝"}, {"id": "chop", "name": "Chops & Grill", "icon": "🍖"}, {"id": "seafood", "name": "Seafood", "icon": "🦐"}, {"id": "combo", "name": "Combo Sets", "icon": "🍱"}, {"id": "breakfast", "name": "Breakfast & Brunch", "icon": "🍳"}, {"id": "soup", "name": "Soups", "icon": "🍲"}, {"id": "local", "name": "Local Delights", "icon": "🍛"}, {"id": "rice", "name": "Rice Bowls & Fried Rice", "icon": "🍚"}, {"id": "japanese", "name": "Japanese Dishes", "icon": "🍣"}, {"id": "salad", "name": "Salads & Sides", "icon": "🥗"}, {"id": "snacks", "name": "Snacks & Appetizers", "icon": "🍟"}, {"id": "kids", "name": "Kids Menu", "icon": "🧒"}, {"id": "sauces", "name": "Sauces & Preparations", "icon": "🥫"}, {"id": "ayamgepuk", "name": "Ayam Gepuk", "icon": "🍗"}, {"id": "other", "name": "Other", "icon": "🍽️"}];
+const BUILTIN_CATEGORIES = [{"id": "all", "name": "All", "icon": "🍽️"}, {"id": "pasta", "name": "Pasta", "icon": "🍝"}, {"id": "chop", "name": "Chops & Grill", "icon": "🍖"}, {"id": "seafood", "name": "Seafood", "icon": "🦐"}, {"id": "combo", "name": "Combo Sets", "icon": "🍱"}, {"id": "breakfast", "name": "Breakfast & Brunch", "icon": "🍳"}, {"id": "soup", "name": "Soups", "icon": "🍲"}, {"id": "local", "name": "Local Delights", "icon": "🍛"}, {"id": "rice", "name": "Rice Bowls & Fried Rice", "icon": "🍚"}, {"id": "japanese", "name": "Japanese Dishes", "icon": "🍣"}, {"id": "salad", "name": "Salads & Sides", "icon": "🥗"}, {"id": "snacks", "name": "Snacks & Appetizers", "icon": "🍟"}, {"id": "kids", "name": "Kids Menu", "icon": "🧒"}, {"id": "sauces", "name": "Sauces & Preparations", "icon": "🥫"}, {"id": "ayamgepuk", "name": "Ayam Gepuk", "icon": "🍗"}, {"id": "chazuke", "name": "Chazuke", "icon": "🍵"}, {"id": "other", "name": "Other", "icon": "🍽️"}];
 
 const BUILTIN_UNITS = ["g", "ml", "pcs", "kg", "L", "tsp", "tbsp", "cup", "slice", "portion", "sprigs", "pinch", "pack", "bottle", "box", "bunch", "clove", "stick", "sheet", "can", "gm"];
 
@@ -9167,10 +9269,23 @@ function saveStore() {
 
 // ========== Category Helpers ==========
 function getAllCategories() {
-  const cats = [...BUILTIN_CATEGORIES];
+  let cats = [...BUILTIN_CATEGORIES];
   store.categories.forEach(c => {
     if (!cats.find(x => x.id === c.id)) cats.push(c);
   });
+  // Apply custom category order if saved
+  if (store.categoryOrder && store.categoryOrder.length > 0) {
+    const ordered = [];
+    store.categoryOrder.forEach(id => {
+      const cat = cats.find(c => c.id === id);
+      if (cat) ordered.push(cat);
+    });
+    // Add any categories not in the order list
+    cats.forEach(c => {
+      if (!ordered.find(x => x.id === c.id)) ordered.push(c);
+    });
+    cats = ordered;
+  }
   return cats;
 }
 
@@ -9804,6 +9919,113 @@ function duplicateRecipe(recipeId) {
   
   showToast(t('recipeDuplicated') || 'Recipe duplicated!', 'success');
 }
+
+// ========== Category Management & Reordering ==========
+function openCategoryManager() {
+  const list = document.getElementById('categoryOrderList');
+  if (!list) return;
+  
+  const cats = getAllCategories();
+  list.innerHTML = '';
+  
+  cats.forEach((cat, index) => {
+    if (cat.id === 'all') return; // Skip "All" category
+    
+    const item = document.createElement('div');
+    item.className = 'category-order-item';
+    item.draggable = true;
+    item.dataset.categoryId = cat.id;
+    item.style.cssText = 'display:flex;align-items:center;padding:10px 12px;margin-bottom:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;cursor:grab;transition:all 0.2s;';
+    
+    item.innerHTML = `
+      <span style="margin-right:10px;font-size:18px;">${cat.icon}</span>
+      <span style="flex:1;font-weight:500;">${cat.name}</span>
+      <button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;margin-right:4px;" onclick="moveCategory('${cat.id}', -1)" ${index <= 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;padding:4px 8px;font-size:12px;margin-right:4px;"' : ''}>⬆️</button>
+      <button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;" onclick="moveCategory('${cat.id}', 1)">⬇️</button>
+    `;
+    
+    // Drag and drop events
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragover', handleDragOver);
+    item.addEventListener('drop', handleDrop);
+    item.addEventListener('dragend', handleDragEnd);
+    
+    list.appendChild(item);
+  });
+  
+  openModal('categoryModal');
+}
+
+let draggedCategory = null;
+
+function handleDragStart(e) {
+  draggedCategory = this.dataset.categoryId;
+  this.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  this.style.background = 'var(--primary-light)';
+  this.style.borderColor = 'var(--primary)';
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  this.style.background = '';
+  this.style.borderColor = '';
+  
+  const targetId = this.dataset.categoryId;
+  if (draggedCategory && targetId && draggedCategory !== targetId) {
+    reorderCategories(draggedCategory, targetId);
+  }
+}
+
+function handleDragEnd() {
+  this.style.opacity = '';
+  document.querySelectorAll('.category-order-item').forEach(item => {
+    item.style.background = '';
+    item.style.borderColor = '';
+  });
+}
+
+function moveCategory(categoryId, direction) {
+  const cats = getAllCategories().filter(c => c.id !== 'all');
+  const currentIndex = cats.findIndex(c => c.id === categoryId);
+  const newIndex = currentIndex + direction;
+  
+  if (newIndex < 0 || newIndex >= cats.length) return;
+  
+  // Swap
+  const order = cats.map(c => c.id);
+  [order[currentIndex], order[newIndex]] = [order[newIndex], order[currentIndex]];
+  
+  store.categoryOrder = order;
+  saveStore();
+  renderCategories();
+  openCategoryManager(); // Refresh modal
+}
+
+function reorderCategories(draggedId, targetId) {
+  const cats = getAllCategories().filter(c => c.id !== 'all');
+  const order = cats.map(c => c.id);
+  
+  const draggedIndex = order.indexOf(draggedId);
+  const targetIndex = order.indexOf(targetId);
+  
+  if (draggedIndex === -1 || targetIndex === -1) return;
+  
+  // Remove dragged and insert at target
+  order.splice(draggedIndex, 1);
+  order.splice(targetIndex, 0, draggedId);
+  
+  store.categoryOrder = order;
+  saveStore();
+  renderCategories();
+  openCategoryManager(); // Refresh modal
+}
+
 
 function deleteRecipe(id) {
   if (!confirm('Are you sure you want to delete this recipe?')) return;
