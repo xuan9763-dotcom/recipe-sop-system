@@ -3192,6 +3192,7 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
     <div class="modal-footer">
       <button class="btn btn-success" onclick="exportCurrentRecipe()">📥 <span data-i18n="exportRecipe">Export Recipe</span></button>
       <button class="btn btn-secondary" onclick="printSOP()">🖨️ <span data-i18n="printSOP">Print SOP</span></button>
+      <button class="btn btn-secondary" onclick="duplicateRecipe(currentRecipe.id)">📋 <span data-i18n="duplicate">Duplicate</span></button>
       <button class="btn btn-info" onclick="editCurrentRecipe()">✏️ <span data-i18n="edit">Edit</span></button>
       <button class="btn btn-primary" onclick="closeModal('detailModal')"><span data-i18n="close">Close</span></button>
     </div>
@@ -3303,6 +3304,9 @@ const I18N = {
     exportExcel: "Export Excel",
     importExcel: "Import Excel",
     addRecipe: "Add Recipe",
+    duplicate: "Duplicate",
+    duplicateRecipe: "Duplicate Recipe",
+    recipeDuplicated: "Recipe duplicated! Edit and save.",
     all: "All",
     noRecipesFound: "No recipes found. Try a different search or category.",
     printSOP: "Print SOP",
@@ -3387,6 +3391,9 @@ const I18N = {
     exportExcel: "导出Excel",
     importExcel: "导入Excel",
     addRecipe: "添加食谱",
+    duplicate: "复制",
+    duplicateRecipe: "复制食谱",
+    recipeDuplicated: "食谱已复制！请编辑并保存。",
     all: "全部",
     noRecipesFound: "未找到食谱，请尝试其他搜索或分类。",
     printSOP: "打印SOP",
@@ -9075,42 +9082,50 @@ const BUILTIN_RECIPES = [
       {
         "qty": "200",
         "unit": "g",
-        "name": "Jap Rice"
+        "name": "Jap Rice",
+        "cost": "1.08"
       },
       {
         "qty": "6.5",
         "unit": "g",
-        "name": "Ajido Forikake Okaka"
+        "name": "Ajido Forikake Okaka",
+        "cost": "0.40"
       },
       {
         "qty": "4",
         "unit": "g",
-        "name": "Nagatanien Arare (Rice Cracker)"
+        "name": "Nagatanien Arare (Rice Cracker)",
+        "cost": "0.50"
       },
       {
         "qty": "0.5",
         "unit": "g",
-        "name": "Seaweed"
+        "name": "Seaweed",
+        "cost": "0.00"
       },
       {
         "qty": "3",
         "unit": "g",
-        "name": "Hondashi Bonito Seasoning Powder"
+        "name": "Hondashi Bonito Seasoning Powder",
+        "cost": "0.10"
       },
       {
         "qty": "1",
         "unit": "pack",
-        "name": "Genmaicha Tea Bag"
+        "name": "Genmaicha Tea Bag",
+        "cost": "0.45"
       },
       {
         "qty": "30",
         "unit": "g",
-        "name": "Edamame"
+        "name": "Edamame",
+        "cost": "0.45"
       },
       {
         "qty": "40",
         "unit": "g",
-        "name": "Egg Roll"
+        "name": "Egg Roll",
+        "cost": "0.40"
       }
     ],
     "steps": [
@@ -9764,6 +9779,30 @@ function saveRecipe() {
   closeModal('formModal');
   renderCategories();
   renderGrid();
+}
+
+function duplicateRecipe(recipeId) {
+  const recipe = getRecipeById(recipeId);
+  if (!recipe) {
+    showToast('Recipe not found.', 'error');
+    return;
+  }
+  
+  // Create a deep copy with new id
+  const newRecipe = JSON.parse(JSON.stringify(recipe));
+  newRecipe.id = 'custom_' + Date.now();
+  newRecipe.name = recipe.name + ' (Copy)';
+  
+  // Add to custom recipes
+  if (!store.customRecipes) store.customRecipes = [];
+  store.customRecipes.push(newRecipe);
+  saveStore();
+  
+  // Close detail modal and open edit form
+  closeModal('detailModal');
+  editRecipe(newRecipe.id);
+  
+  showToast(t('recipeDuplicated') || 'Recipe duplicated!', 'success');
 }
 
 function deleteRecipe(id) {
