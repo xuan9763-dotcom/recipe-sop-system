@@ -3194,6 +3194,7 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       <button class="btn btn-secondary" onclick="printSOP()">🖨️ <span data-i18n="printSOP">Print SOP</span></button>
       <button class="btn btn-secondary" onclick="duplicateRecipe(currentRecipe.id)">📋 <span data-i18n="duplicate">Duplicate</span></button>
       <button class="btn btn-info" onclick="editCurrentRecipe()">✏️ <span data-i18n="edit">Edit</span></button>
+      <button class="btn btn-danger" onclick="deleteCurrentRecipe()" style="background:#e74c3c;color:white;border:none;">🗑️ <span data-i18n="deleteRecipe">Delete</span></button>
       <button class="btn btn-primary" onclick="closeModal('detailModal')"><span data-i18n="close">Close</span></button>
     </div>
   </div>
@@ -3333,6 +3334,10 @@ const I18N = {
     deleteCategory: "Delete Category",
     deleteCategoryConfirm: "Are you sure you want to delete this category? Recipes in this category will be moved to \"Other\".",
     categoryDeleted: "Category deleted successfully",
+    deleteRecipe: "Delete Recipe",
+    deleteRecipeConfirm: "Are you sure you want to delete this recipe? This action cannot be undone.",
+    recipeDeleted: "Recipe deleted successfully",
+    cannotDeleteBuiltin: "Built-in recipes cannot be deleted. You can edit or duplicate them.",
     cannotDeleteBuiltin: "Cannot delete built-in categories",
     all: "All",
     noRecipesFound: "No recipes found. Try a different search or category.",
@@ -3429,6 +3434,10 @@ const I18N = {
     deleteCategory: "删除分类",
     deleteCategoryConfirm: "确定要删除这个分类吗？该分类下的食谱将被移到\"其他\"分类。",
     categoryDeleted: "分类已删除",
+    deleteRecipe: "删除食谱",
+    deleteRecipeConfirm: "确定要删除这个食谱吗？此操作无法撤销。",
+    recipeDeleted: "食谱已删除",
+    cannotDeleteBuiltin: "内置食谱无法删除，您可以编辑或复制它们。",
     cannotDeleteBuiltin: "无法删除内置分类",
     all: "全部",
     noRecipesFound: "未找到食谱，请尝试其他搜索或分类。",
@@ -9326,6 +9335,10 @@ function getAllRecipes() {
     }
     return r;
   });
+  // Filter out deleted recipes
+  if (store.deletedRecipes && store.deletedRecipes.length > 0) {
+    recipes = recipes.filter(r => !store.deletedRecipes.includes(r.id));
+  }
   return recipes;
 }
 
@@ -9928,6 +9941,64 @@ function duplicateRecipe(recipeId) {
   
   showToast(t('recipeDuplicated') || 'Recipe duplicated!', 'success');
 }
+
+function deleteCurrentRecipe() {
+  if (currentRecipe) {
+    deleteRecipe(currentRecipe.id);
+  }
+}
+
+function deleteRecipe(recipeId) {
+  const recipe = getRecipeById(recipeId);
+  if (!recipe) {
+    showToast('Recipe not found.', 'error');
+    return;
+  }
+  
+  // Check if it's a built-in recipe
+  const isBuiltin = recipeId.startsWith('b');
+  if (isBuiltin) {
+    // For built-in recipes, we can still delete them by adding to deleted list
+    // But let's confirm with user first
+    const confirmMsg = t('deleteRecipeConfirm') || 'Are you sure you want to delete this recipe?';
+    if (!confirm(confirmMsg)) return;
+    
+    // Add to deleted recipes list
+    if (!store.deletedRecipes) store.deletedRecipes = [];
+    if (!store.deletedRecipes.includes(recipeId)) {
+      store.deletedRecipes.push(recipeId);
+    }
+  } else {
+    // For custom recipes, confirm and delete
+    const confirmMsg = t('deleteRecipeConfirm') || 'Are you sure you want to delete this recipe?';
+    if (!confirm(confirmMsg)) return;
+    
+    // Remove from custom recipes
+    if (store.customRecipes) {
+      store.customRecipes = store.customRecipes.filter(r => r.id !== recipeId);
+    }
+    
+    // Also remove from overrides if exists
+    if (store.recipeOverrides && store.recipeOverrides[recipeId]) {
+      delete store.recipeOverrides[recipeId];
+    }
+  }
+  
+  saveStore();
+  
+  // Close detail modal if open
+  if (currentRecipe && currentRecipe.id === recipeId) {
+    closeModal('detailModal');
+    currentRecipe = null;
+  }
+  
+  // Re-render
+  renderCategories();
+  renderGrid();
+  
+  showToast(t('recipeDeleted') || 'Recipe deleted successfully', 'success');
+}
+
 
 // ========== Category Management & Reordering ==========
 function openCategoryManager() {
