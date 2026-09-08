@@ -3330,6 +3330,10 @@ const I18N = {
     moveDown: "Move Down",
     categoryOrder: "Category Order",
     dragToReorder: "Drag to reorder categories",
+    deleteCategory: "Delete Category",
+    deleteCategoryConfirm: "Are you sure you want to delete this category? Recipes in this category will be moved to \"Other\".",
+    categoryDeleted: "Category deleted successfully",
+    cannotDeleteBuiltin: "Cannot delete built-in categories",
     all: "All",
     noRecipesFound: "No recipes found. Try a different search or category.",
     printSOP: "Print SOP",
@@ -3422,6 +3426,10 @@ const I18N = {
     moveDown: "下移",
     categoryOrder: "分类顺序",
     dragToReorder: "拖拽调整分类顺序",
+    deleteCategory: "删除分类",
+    deleteCategoryConfirm: "确定要删除这个分类吗？该分类下的食谱将被移到\"其他\"分类。",
+    categoryDeleted: "分类已删除",
+    cannotDeleteBuiltin: "无法删除内置分类",
     all: "全部",
     noRecipesFound: "未找到食谱，请尝试其他搜索或分类。",
     printSOP: "打印SOP",
@@ -9334,8 +9342,8 @@ function renderCategories() {
   let html = '';
   // Built-in category name translations
   const catTranslations = {
-    en: { all: 'All', pasta: 'Pasta', chop: 'Chops & Grill', seafood: 'Seafood', combo: 'Combo Sets', breakfast: 'Breakfast & Brunch', soup: 'Soups', local: 'Local Delights', rice: 'Rice Bowls & Fried Rice', japanese: 'Japanese', salad: 'Salads', snacks: 'Snacks & Sides', kids: 'Kids Meal', sauces: 'Sauces & Dips', ayamgepuk: 'Ayam Gepuk', other: 'Others' },
-    zh: { all: '全部', pasta: '意面', chop: '扒类', seafood: '海鲜', combo: '套餐', breakfast: '早餐', soup: '汤类', local: '本地美食', rice: '饭类', japanese: '日式', salad: '沙拉', snacks: '小吃', kids: '儿童餐', sauces: '酱料', ayamgepuk: '印尼炸鸡', other: '其他' }
+    en: { all: 'All', pasta: 'Pasta', chop: 'Chops & Grill', seafood: 'Seafood', combo: 'Combo Sets', breakfast: 'Breakfast & Brunch', soup: 'Soups', local: 'Local Delights', rice: 'Rice Bowls & Fried Rice', japanese: 'Japanese', salad: 'Salads', snacks: 'Snacks & Sides', kids: 'Kids Meal', sauces: 'Sauces & Dips', ayamgepuk: 'Ayam Gepuk', chazuke: 'Chazuke', other: 'Others' },
+    zh: { all: '全部', pasta: '意面', chop: '扒类', seafood: '海鲜', combo: '套餐', breakfast: '早餐', soup: '汤类', local: '本地美食', rice: '饭类', japanese: '日式', salad: '沙拉', snacks: '小吃', kids: '儿童餐', sauces: '酱料', ayamgepuk: '印尼炸鸡', chazuke: '茶泡饭', other: '其他' }
   };
   
   cats.forEach(cat => {
@@ -9347,6 +9355,7 @@ function renderCategories() {
     </button>`;
   });
   html += `<button class="cat-add-btn" onclick="openCatModal()">+ ${currentLang === 'zh' ? '分类' : 'Category'}</button>`;
+  html += `<button class="cat-add-btn" onclick="openCategoryManager()" style="background:var(--primary-light);color:var(--primary-dark);border-style:solid;">📋 ${currentLang === 'zh' ? '管理' : 'Manage'}</button>`;
   bar.innerHTML = html;
 }
 
@@ -9937,11 +9946,15 @@ function openCategoryManager() {
     item.dataset.categoryId = cat.id;
     item.style.cssText = 'display:flex;align-items:center;padding:10px 12px;margin-bottom:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;cursor:grab;transition:all 0.2s;';
     
+    const isCustom = store.categories.find(c => c.id === cat.id);
+    const deleteBtn = isCustom ? `<button class="btn btn-danger" style="padding:4px 8px;font-size:12px;margin-left:4px;background:#e74c3c;color:white;border:none;" onclick="deleteCategory('${cat.id}')">🗑️</button>` : '';
     item.innerHTML = `
       <span style="margin-right:10px;font-size:18px;">${cat.icon}</span>
       <span style="flex:1;font-weight:500;">${cat.name}</span>
+      ${isCustom ? '<span style="font-size:10px;color:var(--text-light);margin-right:8px;">Custom</span>' : ''}
       <button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;margin-right:4px;" onclick="moveCategory('${cat.id}', -1)" ${index <= 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;padding:4px 8px;font-size:12px;margin-right:4px;"' : ''}>⬆️</button>
       <button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;" onclick="moveCategory('${cat.id}', 1)">⬇️</button>
+      ${deleteBtn}
     `;
     
     // Drag and drop events
@@ -9953,7 +9966,8 @@ function openCategoryManager() {
     list.appendChild(item);
   });
   
-  openModal('categoryModal');
+  document.getElementById('categoryModal').classList.add('show');
+  document.body.classList.add('modal-open');
 }
 
 let draggedCategory = null;
@@ -10025,6 +10039,59 @@ function reorderCategories(draggedId, targetId) {
   renderCategories();
   openCategoryManager(); // Refresh modal
 }
+
+function deleteCategory(categoryId) {
+  // Check if it's a built-in category
+  const isBuiltin = BUILTIN_CATEGORIES.find(c => c.id === categoryId);
+  if (isBuiltin) {
+    showToast(t('cannotDeleteBuiltin') || 'Cannot delete built-in categories', 'error');
+    return;
+  }
+  
+  // Confirm deletion
+  const confirmMsg = t('deleteCategoryConfirm') || 'Are you sure you want to delete this category?';
+  if (!confirm(confirmMsg)) return;
+  
+  // Move all recipes in this category to 'other'
+  const allRecipes = getAllRecipes();
+  allRecipes.forEach(recipe => {
+    if (recipe.category === categoryId) {
+      recipe.category = 'other';
+      // Update in store if it's a custom recipe or override
+      if (recipe.id.startsWith('custom_')) {
+        const idx = store.customRecipes.findIndex(r => r.id === recipe.id);
+        if (idx >= 0) store.customRecipes[idx].category = 'other';
+      } else {
+        // It's a builtin recipe, add override
+        if (!store.recipeOverrides) store.recipeOverrides = {};
+        if (!store.recipeOverrides[recipe.id]) store.recipeOverrides[recipe.id] = {};
+        store.recipeOverrides[recipe.id].category = 'other';
+      }
+    }
+  });
+  
+  // Remove from custom categories
+  store.categories = store.categories.filter(c => c.id !== categoryId);
+  
+  // Remove from category order
+  if (store.categoryOrder) {
+    store.categoryOrder = store.categoryOrder.filter(id => id !== categoryId);
+  }
+  
+  saveStore();
+  
+  // If current category is the deleted one, switch to 'all'
+  if (currentCategory === categoryId) {
+    currentCategory = 'all';
+  }
+  
+  renderCategories();
+  renderGrid();
+  openCategoryManager(); // Refresh modal
+  
+  showToast(t('categoryDeleted') || 'Category deleted successfully', 'success');
+}
+
 
 
 function deleteRecipe(id) {
