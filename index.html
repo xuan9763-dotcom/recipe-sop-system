@@ -8625,6 +8625,10 @@ function getAllRecipes() {
     return override ? {...r, ...override, _edited: true} : {...r};
   });
   recipes = recipes.concat(store.customRecipes.map(r => ({...r, _custom: true})));
+  // Filter out deleted recipes
+  if (store.deletedRecipes) {
+    recipes = recipes.filter(r => !store.deletedRecipes.includes(r.id));
+  }
   // Normalize steps to object format (backward compatibility)
   recipes = recipes.map(r => {
     if (r.steps) {
@@ -8718,7 +8722,7 @@ function renderGrid() {
       <div class="card-actions" onclick="event.stopPropagation()">
         ${r._edited ? `<button class="card-action-btn reset" title="Reset" onclick="resetRecipe('${r.id}')">↺</button>` : ''}
         <button class="card-action-btn edit" title="Edit" onclick="editRecipe('${r.id}')">✏️</button>
-        ${r._custom ? `<button class="card-action-btn delete" title="Delete" onclick="deleteRecipe('${r.id}')">🗑️</button>` : ''}
+        <button class="card-action-btn delete subtle" title="Delete" onclick="deleteRecipe('${r.id}')">🗑️</button>
       </div>
     </div>
   `).join('');
@@ -9213,8 +9217,14 @@ function saveRecipe() {
 }
 
 function deleteRecipe(id) {
-  if (!confirm('Are you sure you want to delete this recipe?')) return;
+  if (!confirm('Are you sure you want to delete this recipe?\nThis will hide it from the list.')) return;
+  // Remove from custom recipes if it's a custom one
   store.customRecipes = store.customRecipes.filter(r => r.id !== id);
+  // Add to deletedRecipes list to hide builtin recipes
+  if (!store.deletedRecipes) store.deletedRecipes = [];
+  if (!store.deletedRecipes.includes(id)) {
+    store.deletedRecipes.push(id);
+  }
   saveStore();
   renderCategories();
   renderGrid();
