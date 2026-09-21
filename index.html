@@ -8686,9 +8686,1447 @@ const BUILTIN_RECIPES = [
       "Finally, add the mala sauce and stir-fry over high heat until dry and fragrant."
     ]
   }
+  // Drinks added from menu
+  [
+    {
+      "id": "cc1",
+      "name": "Espresso",
+      "category": "drinks",
+      "icon": "☕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 6.9,
+      "ingredients": [
+        {
+          "qty": 18,
+          "unit": "ml",
+          "name": "Espresso Beans",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Extract espresso shot"
+        }
+      ]
+    },
+    {
+      "id": "cc2",
+      "name": "Long Black",
+      "category": "drinks",
+      "icon": "☕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 8.9,
+      "ingredients": [
+        {
+          "qty": 60,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        },
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Double Espresso",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour hot water, then add double espresso on top"
+        }
+      ]
+    },
+    {
+      "id": "cc3",
+      "name": "Cappuccino",
+      "category": "drinks",
+      "icon": "☕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 11.9,
+      "ingredients": [
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Espresso",
+          "cost": 3
+        },
+        {
+          "qty": 60,
+          "unit": "ml",
+          "name": "Steamed Milk",
+          "cost": 1.5
+        },
+        {
+          "qty": 60,
+          "unit": "ml",
+          "name": "Milk Foam",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour espresso, then steamed milk, then top with milk foam"
+        }
+      ]
+    },
+    {
+      "id": "cc4",
+      "name": "Latte",
+      "category": "drinks",
+      "icon": "☕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 11.9,
+      "ingredients": [
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Espresso",
+          "cost": 3
+        },
+        {
+          "qty": 180,
+          "unit": "ml",
+          "name": "Steamed Milk",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour espresso, then steamed milk"
+        }
+      ]
+    },
+    {
+      "id": "cc5",
+      "name": "Mocha",
+      "category": "drinks",
+      "icon": "☕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 12.9,
+      "ingredients": [
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Espresso",
+          "cost": 3
+        },
+        {
+          "qty": 20,
+          "unit": "ml",
+          "name": "Chocolate Syrup",
+          "cost": 1
+        },
+        {
+          "qty": 180,
+          "unit": "ml",
+          "name": "Steamed Milk",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix espresso with chocolate syrup, then add steamed milk"
+        }
+      ]
+    },
+    {
+      "id": "cc6",
+      "name": "Caramel Macchiato",
+      "category": "drinks",
+      "icon": "☕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 13.9,
+      "ingredients": [
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Espresso",
+          "cost": 3
+        },
+        {
+          "qty": 180,
+          "unit": "ml",
+          "name": "Steamed Milk",
+          "cost": 3
+        },
+        {
+          "qty": 15,
+          "unit": "ml",
+          "name": "Caramel Syrup",
+          "cost": 1
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add vanilla syrup, steamed milk, then espresso, drizzle caramel on top"
+        }
+      ]
+    },
+    {
+      "id": "cc7",
+      "name": "Chocolate",
+      "category": "drinks",
+      "icon": "🍫",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 12.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Chocolate Sauce",
+          "cost": 1.5
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Milk",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix chocolate sauce with hot milk"
+        }
+      ]
+    },
+    {
+      "id": "cc8",
+      "name": "Matcha",
+      "category": "drinks",
+      "icon": "🍵",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 13.9,
+      "ingredients": [
+        {
+          "qty": 3,
+          "unit": "g",
+          "name": "Matcha Powder",
+          "cost": 2
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Steamed Milk",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Whisk matcha with hot water, then add steamed milk"
+        }
+      ]
+    },
+    {
+      "id": "cc9",
+      "name": "Coconut Latte",
+      "category": "drinks",
+      "icon": "🥥",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 15.9,
+      "ingredients": [
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Espresso",
+          "cost": 3
+        },
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Coconut Milk",
+          "cost": 4
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour espresso, then add coconut milk"
+        }
+      ]
+    },
+    {
+      "id": "cc10",
+      "name": "Coconut Cappuccino",
+      "category": "drinks",
+      "icon": "🥥",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 3,
+      "price": 15.9,
+      "ingredients": [
+        {
+          "qty": 36,
+          "unit": "ml",
+          "name": "Espresso",
+          "cost": 3
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Coconut Milk",
+          "cost": 3
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Milk Foam",
+          "cost": 1
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour espresso, then coconut milk, then top with foam"
+        }
+      ]
+    },
+    {
+      "id": "nc1",
+      "name": "English Breakfast Tea",
+      "category": "drinks",
+      "icon": "🍵",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "bag",
+          "name": "English Breakfast Tea Bag",
+          "cost": 0.5
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep tea bag in hot water for 3 minutes"
+        }
+      ]
+    },
+    {
+      "id": "nc2",
+      "name": "Chamomile Tea",
+      "category": "drinks",
+      "icon": "🌼",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "bag",
+          "name": "Chamomile Tea Bag",
+          "cost": 0.5
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep tea bag in hot water for 3 minutes"
+        }
+      ]
+    },
+    {
+      "id": "nc3",
+      "name": "Green Tea",
+      "category": "drinks",
+      "icon": "🍵",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "bag",
+          "name": "Green Tea Bag",
+          "cost": 0.5
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep tea bag in hot water for 2 minutes"
+        }
+      ]
+    },
+    {
+      "id": "nc4",
+      "name": "Earl Grey Tea",
+      "category": "drinks",
+      "icon": "🍵",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "bag",
+          "name": "Earl Grey Tea Bag",
+          "cost": 0.5
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep tea bag in hot water for 3 minutes"
+        }
+      ]
+    },
+    {
+      "id": "nc5",
+      "name": "Jasmine Tea",
+      "category": "drinks",
+      "icon": "🌸",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "bag",
+          "name": "Jasmine Tea Bag",
+          "cost": 0.5
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep tea bag in hot water for 2 minutes"
+        }
+      ]
+    },
+    {
+      "id": "dd1",
+      "name": "Honey Lemon",
+      "category": "drinks",
+      "icon": "🍋",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 2,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 15,
+          "unit": "ml",
+          "name": "Honey",
+          "cost": 0.5
+        },
+        {
+          "qty": 10,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.3
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix honey and lemon juice, then add hot water"
+        }
+      ]
+    },
+    {
+      "id": "dd2",
+      "name": "Passion Fruit Tea",
+      "category": "drinks",
+      "icon": "🥭",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 2,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Passion Fruit Syrup",
+          "cost": 1
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Tea",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix passion fruit syrup with tea"
+        }
+      ]
+    },
+    {
+      "id": "dd3",
+      "name": "Apple Tea",
+      "category": "drinks",
+      "icon": "🍎",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 2,
+      "price": 5.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Apple Syrup",
+          "cost": 1
+        },
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Tea",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix apple syrup with tea"
+        }
+      ]
+    },
+    {
+      "id": "dd6",
+      "name": "Black Soybean",
+      "category": "drinks",
+      "icon": "🫘",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 2,
+      "price": 6.9,
+      "ingredients": [
+        {
+          "qty": 250,
+          "unit": "ml",
+          "name": "Black Soybean Milk",
+          "cost": 2
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour black soybean milk into glass"
+        }
+      ]
+    },
+    {
+      "id": "dd7",
+      "name": "Black Soybean with Grass Jelly",
+      "category": "drinks",
+      "icon": "🫘",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 2,
+      "price": 8.9,
+      "ingredients": [
+        {
+          "qty": 20,
+          "unit": "g",
+          "name": "Grass Jelly",
+          "cost": 1
+        },
+        {
+          "qty": 250,
+          "unit": "ml",
+          "name": "Black Soybean Milk",
+          "cost": 2
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add grass jelly, then pour black soybean milk"
+        }
+      ]
+    },
+    {
+      "id": "fj1",
+      "name": "Orange Juice",
+      "category": "drinks",
+      "icon": "🍊",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Fresh Orange Juice",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour fresh orange juice over ice"
+        }
+      ]
+    },
+    {
+      "id": "fj2",
+      "name": "Apple Juice",
+      "category": "drinks",
+      "icon": "🍎",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 200,
+          "unit": "ml",
+          "name": "Fresh Apple Juice",
+          "cost": 3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Pour fresh apple juice over ice"
+        }
+      ]
+    },
+    {
+      "id": "fj3",
+      "name": "Carrot Milk",
+      "category": "drinks",
+      "icon": "🥕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Carrot Juice",
+          "cost": 2
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Milk",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix carrot juice with milk"
+        }
+      ]
+    },
+    {
+      "id": "fj4",
+      "name": "Apple Carrot",
+      "category": "drinks",
+      "icon": "🥕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Apple Juice",
+          "cost": 1.5
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Carrot Juice",
+          "cost": 2
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix apple and carrot juice"
+        }
+      ]
+    },
+    {
+      "id": "fj5",
+      "name": "Lemon Orange",
+      "category": "drinks",
+      "icon": "🍋",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Orange Juice",
+          "cost": 2.5
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix orange juice with lemon juice"
+        }
+      ]
+    },
+    {
+      "id": "fj6",
+      "name": "Lemon Apple",
+      "category": "drinks",
+      "icon": "🍋",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Apple Juice",
+          "cost": 2.5
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix apple juice with lemon juice"
+        }
+      ]
+    },
+    {
+      "id": "fj7",
+      "name": "Orange Carrot",
+      "category": "drinks",
+      "icon": "🥕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Orange Juice",
+          "cost": 1.5
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Carrot Juice",
+          "cost": 2
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix orange and carrot juice"
+        }
+      ]
+    },
+    {
+      "id": "fj8",
+      "name": "Apple Orange",
+      "category": "drinks",
+      "icon": "🍎",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Apple Juice",
+          "cost": 1.5
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Orange Juice",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix apple and orange juice"
+        }
+      ]
+    },
+    {
+      "id": "fj9",
+      "name": "Carrot Lemonade",
+      "category": "drinks",
+      "icon": "🥕",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Carrot Juice",
+          "cost": 2
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Lemonade",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix carrot juice with lemonade"
+        }
+      ]
+    },
+    {
+      "id": "ft1",
+      "name": "Lavender Flower Tea",
+      "category": "drinks",
+      "icon": "💜",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Lavender Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep lavender tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "ft2",
+      "name": "Chamomile Flower Tea",
+      "category": "drinks",
+      "icon": "🌼",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Chamomile Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep chamomile tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "ft3",
+      "name": "Lychee Black Flower Tea",
+      "category": "drinks",
+      "icon": "🍒",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Lychee Black Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep lychee black tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "ft4",
+      "name": "Lychee Rose Flower Tea",
+      "category": "drinks",
+      "icon": "🌹",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Lychee Rose Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep lychee rose tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "ft5",
+      "name": "Peach Flower Tea",
+      "category": "drinks",
+      "icon": "🍑",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Peach Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep peach tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "ft6",
+      "name": "Blueberry Flower Tea",
+      "category": "drinks",
+      "icon": "🫐",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Blueberry Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep blueberry tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "ft7",
+      "name": "Apple Rose Flower Tea",
+      "category": "drinks",
+      "icon": "🍎",
+      "yield": 1,
+      "prepTime": 1,
+      "cookTime": 3,
+      "price": 10.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Apple Rose Tea Leaves",
+          "cost": 2
+        },
+        {
+          "qty": 300,
+          "unit": "ml",
+          "name": "Hot Water",
+          "cost": 0
+        }
+      ],
+      "steps": [
+        {
+          "text": "Steep apple rose tea leaves for 5 minutes"
+        }
+      ]
+    },
+    {
+      "id": "sd1",
+      "name": "Spring Blackcurrant Soda",
+      "category": "drinks",
+      "icon": "🫐",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Blackcurrant Syrup",
+          "cost": 1.5
+        },
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Soda Water",
+          "cost": 1
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add syrup, ice, then soda water, garnish with lemon"
+        }
+      ]
+    },
+    {
+      "id": "sd2",
+      "name": "Summer Passion Fruit Soda",
+      "category": "drinks",
+      "icon": "🥭",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Passion Fruit Syrup",
+          "cost": 1.5
+        },
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Soda Water",
+          "cost": 1
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add syrup, ice, then soda water, garnish with passion fruit"
+        }
+      ]
+    },
+    {
+      "id": "sd3",
+      "name": "Autumn Lime & Lemon Soda",
+      "category": "drinks",
+      "icon": "🍋",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 20,
+          "unit": "ml",
+          "name": "Lemon Syrup",
+          "cost": 1
+        },
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Soda Water",
+          "cost": 1
+        },
+        {
+          "qty": 1,
+          "unit": "pc",
+          "name": "Lemon Slice",
+          "cost": 0.3
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add syrup, ice, then soda water, garnish with lime and lemon"
+        }
+      ]
+    },
+    {
+      "id": "sd4",
+      "name": "Winter Blue Lagoon Soda",
+      "category": "drinks",
+      "icon": "💙",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Blue Curacao Syrup",
+          "cost": 1.5
+        },
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Soda Water",
+          "cost": 1
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add syrup, ice, then soda water, garnish with lemon"
+        }
+      ]
+    },
+    {
+      "id": "sd5",
+      "name": "Sunshine Peach Soda",
+      "category": "drinks",
+      "icon": "🍑",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 9.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Peach Syrup",
+          "cost": 1.5
+        },
+        {
+          "qty": 150,
+          "unit": "ml",
+          "name": "Soda Water",
+          "cost": 1
+        },
+        {
+          "qty": 50,
+          "unit": "ml",
+          "name": "Lemon Juice",
+          "cost": 0.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Add syrup, ice, then soda water, garnish with peach"
+        }
+      ]
+    },
+    {
+      "id": "ms1",
+      "name": "Chocolate Milk Shake",
+      "category": "drinks",
+      "icon": "🍫",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 14.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Chocolate Syrup",
+          "cost": 1.5
+        },
+        {
+          "qty": 2,
+          "unit": "scoop",
+          "name": "Vanilla Ice Cream",
+          "cost": 3
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Milk",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Blend all ingredients until smooth"
+        }
+      ]
+    },
+    {
+      "id": "ms2",
+      "name": "Mango Milk Shake",
+      "category": "drinks",
+      "icon": "🥭",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 14.9,
+      "ingredients": [
+        {
+          "qty": 50,
+          "unit": "g",
+          "name": "Mango Puree",
+          "cost": 2
+        },
+        {
+          "qty": 2,
+          "unit": "scoop",
+          "name": "Vanilla Ice Cream",
+          "cost": 3
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Milk",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Blend all ingredients until smooth"
+        }
+      ]
+    },
+    {
+      "id": "ms3",
+      "name": "Passion Fruit Milk Shake",
+      "category": "drinks",
+      "icon": "🥭",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 14.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "ml",
+          "name": "Passion Fruit Syrup",
+          "cost": 1.5
+        },
+        {
+          "qty": 2,
+          "unit": "scoop",
+          "name": "Vanilla Ice Cream",
+          "cost": 3
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Milk",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Blend all ingredients until smooth"
+        }
+      ]
+    },
+    {
+      "id": "ms4",
+      "name": "Matcha Milk Shake",
+      "category": "drinks",
+      "icon": "🍵",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 14.9,
+      "ingredients": [
+        {
+          "qty": 5,
+          "unit": "g",
+          "name": "Matcha Powder",
+          "cost": 2
+        },
+        {
+          "qty": 2,
+          "unit": "scoop",
+          "name": "Vanilla Ice Cream",
+          "cost": 3
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Milk",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Blend all ingredients until smooth"
+        }
+      ]
+    },
+    {
+      "id": "ms5",
+      "name": "Banana Milk Shake",
+      "category": "drinks",
+      "icon": "🍌",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 14.9,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "pc",
+          "name": "Banana",
+          "cost": 1
+        },
+        {
+          "qty": 2,
+          "unit": "scoop",
+          "name": "Vanilla Ice Cream",
+          "cost": 3
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Milk",
+          "cost": 1.5
+        }
+      ],
+      "steps": [
+        {
+          "text": "Blend all ingredients until smooth"
+        }
+      ]
+    },
+    {
+      "id": "nc7",
+      "name": "Coconut Purple Rice Frappe",
+      "category": "drinks",
+      "icon": "🥥",
+      "yield": 1,
+      "prepTime": 2,
+      "cookTime": 0,
+      "price": 16.9,
+      "ingredients": [
+        {
+          "qty": 30,
+          "unit": "g",
+          "name": "Purple Rice",
+          "cost": 1.5
+        },
+        {
+          "qty": 2,
+          "unit": "scoop",
+          "name": "Coconut Ice Cream",
+          "cost": 4
+        },
+        {
+          "qty": 100,
+          "unit": "ml",
+          "name": "Coconut Milk",
+          "cost": 2
+        }
+      ],
+      "steps": [
+        {
+          "text": "Blend all ingredients until smooth, top with purple rice"
+        }
+      ]
+    }
+  ]
 ];
 
-const BUILTIN_CATEGORIES = [{"id": "all", "name": "All", "icon": "🍽️"}, {"id": "pasta", "name": "Pasta", "icon": "🍝"}, {"id": "chop", "name": "Chops & Grill", "icon": "🍖"}, {"id": "seafood", "name": "Seafood", "icon": "🦐"}, {"id": "combo", "name": "Combo Sets", "icon": "🍱"}, {"id": "breakfast", "name": "Breakfast & Brunch", "icon": "🍳"}, {"id": "soup", "name": "Soups", "icon": "🍲"}, {"id": "local", "name": "Local Delights", "icon": "🍛"}, {"id": "rice", "name": "Rice Bowls & Fried Rice", "icon": "🍚"}, {"id": "japanese", "name": "Japanese Dishes", "icon": "🍣"}, {"id": "salad", "name": "Salads & Sides", "icon": "🥗"}, {"id": "snacks", "name": "Snacks & Appetizers", "icon": "🍟"}, {"id": "kids", "name": "Kids Menu", "icon": "🧒"}, {"id": "sauces", "name": "Sauces & Preparations", "icon": "🥫"}, {"id": "ayamgepuk", "name": "Ayam Gepuk", "icon": "🍗"}, {"id": "curryomurice", "name": "Curry Omurice", "icon": "🍛"}, {"id": "chazuke", "name": "Chazuke", "icon": "🍵"}, {"id": "dessert", "name": "Dessert", "icon": "🍰"}, {"id": "other", "name": "Other", "icon": "🍽️"}];
+const BUILTIN_CATEGORIES = [{"id": "all", "name": "All", "icon": "🍽️"}, {"id": "pasta", "name": "Pasta", "icon": "🍝"}, {"id": "chop", "name": "Chops & Grill", "icon": "🍖"}, {"id": "seafood", "name": "Seafood", "icon": "🦐"}, {"id": "combo", "name": "Combo Sets", "icon": "🍱"}, {"id": "breakfast", "name": "Breakfast & Brunch", "icon": "🍳"}, {"id": "soup", "name": "Soups", "icon": "🍲"}, {"id": "local", "name": "Local Delights", "icon": "🍛"}, {"id": "rice", "name": "Rice Bowls & Fried Rice", "icon": "🍚"}, {"id": "japanese", "name": "Japanese Dishes", "icon": "🍣"}, {"id": "salad", "name": "Salads & Sides", "icon": "🥗"}, {"id": "snacks", "name": "Snacks & Appetizers", "icon": "🍟"}, {"id": "kids", "name": "Kids Menu", "icon": "🧒"}, {"id": "sauces", "name": "Sauces & Preparations", "icon": "🥫"}, {"id": "ayamgepuk", "name": "Ayam Gepuk", "icon": "🍗"}, {"id": "curryomurice", "name": "Curry Omurice", "icon": "🍛"}, {"id": "chazuke", "name": "Chazuke", "icon": "🍵"}, {"id": "dessert", "name": "Dessert", "icon": "🍰"}, {"id": "other", "name": "Other", "icon": "🍽️"}, {"id": "drinks", "name": "Drinks", "icon": "🥤"}];
 
 const BUILTIN_UNITS = ["g", "ml", "pcs", "kg", "L", "tsp", "tbsp", "cup", "slice", "portion", "sprigs", "pinch", "pack", "bottle", "box", "bunch", "clove", "stick", "sheet", "can", "gm"];
 
