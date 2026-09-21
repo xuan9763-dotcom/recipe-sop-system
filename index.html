@@ -921,7 +921,7 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       <button class="btn-add" style="background:#8E44AD;" onclick="backupData()" title="Backup all custom data">💾 <span data-i18n="backup">Backup</span></button>
       <button class="btn-add" style="background:#16A085;" onclick="document.getElementById('restoreFile').click()" title="Restore from backup file">📥 <span data-i18n="restore">Restore</span></button>
       <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">
-      <button class="btn-add" style="background:#2980B9;" onclick="exportToExcel()">📥 <span data-i18n="exportExcel">Export Excel</span></button>
+      <button class="btn-add" style="background:#2980B9;" onclick="exportCurrentCategory()">📥 <span data-i18n="exportExcel">Export Excel</span></button>
       <button class="btn-add" style="background:#E67E22;" onclick="document.getElementById('importExcelFile').click()" title="Import recipes from Excel file">📤 <span data-i18n="importExcel">Import Excel</span></button>
       <input type="file" id="importExcelFile" accept=".xlsx,.xls" style="display:none" onchange="importFromExcel(event)">
       <button class="btn-add" onclick="openAddForm()">➕ <span data-i18n="addRecipe">Add Recipe</span></button>
@@ -10896,6 +10896,17 @@ function changeCoverImage(id) {
     reader.readAsDataURL(file);
   };
   input.click();
+}
+
+function exportCurrentCategory() {
+  let recipes = getAllRecipes();
+  if (currentCategory !== 'all') {
+    recipes = recipes.filter(r => r.category === currentCategory);
+    showToast('Exporting ' + recipes.length + ' recipes from current category', 'success');
+  } else {
+    showToast('Exporting all ' + recipes.length + ' recipes', 'success');
+  }
+  exportToExcel(recipes);
 }
 
 function exportToExcel(recipes) {
