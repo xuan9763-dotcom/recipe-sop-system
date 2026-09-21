@@ -520,12 +520,18 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       display: none !important;
     }
     
-    /* HIDE ALL COST-RELATED ELEMENTS ON PRINT */
+    /* HIDE ENTIRE FIRST SECTION (cost-summary) ON PRINT */
+    #detailModal .section:first-child,
     .cost-summary, .cost-item, .servings-control,
     .ing-cost, .ing-subtotal,
     #totalCost, #costPerServing, #detailTotalCost,
     .modal-footer, .modal-close {
       display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
     }
     
     /* Hide cost columns in ingredients table */
