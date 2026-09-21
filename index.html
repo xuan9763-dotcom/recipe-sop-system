@@ -8764,6 +8764,13 @@ function openDetail(id) {
   const body = document.getElementById('detailBody');
   let html = '';
   
+  // Cover image (finished product)
+  if (r.coverImage) {
+    html += `<div class="section" style="text-align:center;margin-bottom:20px;">
+      <img src="${r.coverImage}" style="max-width:100%;max-height:300px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);" alt="${r.name}">
+    </div>`;
+  }
+  
   // Servings control
   html += `<div class="section">
     <div class="cost-summary">
