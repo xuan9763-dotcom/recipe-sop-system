@@ -520,18 +520,17 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       display: none !important;
     }
     
-    /* HIDE ENTIRE FIRST SECTION (cost-summary) ON PRINT */
-    #detailModal .section:first-child,
-    .cost-summary, .cost-item, .servings-control,
-    .ing-cost, .ing-subtotal,
+    /* HIDE ONLY COST ELEMENTS ON PRINT - keep images and prep/cook time */
     #totalCost, #costPerServing, #detailTotalCost,
+    .ing-cost, .ing-subtotal,
     .modal-footer, .modal-close {
       display: none !important;
-      visibility: hidden !important;
-      height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
+    }
+    
+    /* Hide only the cost-item that contains Total Cost and Cost per Serving */
+    .cost-item:nth-child(4),
+    .cost-item:nth-child(5) {
+      display: none !important;
     }
     
     /* Hide cost columns in ingredients table */
@@ -562,6 +561,15 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       break-inside: avoid; 
       page-break-inside: avoid;
       margin-bottom: 8px !important;
+    }
+    
+    /* EXPLICITLY SHOW IMAGES IN PRINT */
+    .step-image-detail,
+    .section img,
+    .card-cover-img {
+      display: block !important;
+      max-width: 150px !important;
+      max-height: 100px !important;
     }
     
     /* Compact typography */
@@ -8971,7 +8979,57 @@ function calculateRecipeCost(recipe) {
 }
 
 function printSOP() {
+  // Dynamically hide cost elements before printing
+  const hideElements = () => {
+    // Hide total cost and cost per serving
+    document.querySelectorAll('#totalCost, #costPerServing, #detailTotalCost').forEach(el => {
+      el.style.display = 'none';
+    });
+    
+    // Hide cost columns in ingredients table
+    document.querySelectorAll('.ing-table th:nth-child(4), .ing-table td:nth-child(4)').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.ing-table th:nth-child(5), .ing-table td:nth-child(5)').forEach(el => {
+      el.style.display = 'none';
+    });
+    
+    // Hide cost-item that contains Total Cost and Cost per Serving
+    document.querySelectorAll('.cost-item').forEach(el => {
+      const label = el.querySelector('.label');
+      if (label && (label.textContent.includes('Total Cost') || label.textContent.includes('Cost per Serving'))) {
+        el.style.display = 'none';
+      }
+    });
+    
+    // Ensure images are visible
+    document.querySelectorAll('.step-image-detail, .section img').forEach(img => {
+      img.style.display = 'block';
+    });
+  };
+  
+  // Show elements back after printing
+  const showElements = () => {
+    document.querySelectorAll('#totalCost, #costPerServing, #detailTotalCost').forEach(el => {
+      el.style.display = '';
+    });
+    document.querySelectorAll('.ing-table th:nth-child(4), .ing-table td:nth-child(4)').forEach(el => {
+      el.style.display = '';
+    });
+    document.querySelectorAll('.ing-table th:nth-child(5), .ing-table td:nth-child(5)').forEach(el => {
+      el.style.display = '';
+    });
+    document.querySelectorAll('.cost-item').forEach(el => {
+      el.style.display = '';
+    });
+    document.querySelectorAll('.step-image-detail, .section img').forEach(img => {
+      img.style.display = '';
+    });
+  };
+  
+  hideElements();
   window.print();
+  setTimeout(showElements, 500);
 }
 
 function exportCurrentRecipe() {
