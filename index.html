@@ -520,6 +520,22 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
       display: none !important;
     }
     
+    /* HIDE ALL COST-RELATED ELEMENTS ON PRINT */
+    .cost-summary, .cost-item, .servings-control,
+    .ing-cost, .ing-subtotal,
+    #totalCost, #costPerServing, #detailTotalCost,
+    .modal-footer, .modal-close {
+      display: none !important;
+    }
+    
+    /* Hide cost columns in ingredients table */
+    .ing-table th:nth-child(4),
+    .ing-table td:nth-child(4),
+    .ing-table th:nth-child(5),
+    .ing-table td:nth-child(5) {
+      display: none !important;
+    }
+    
     /* Only show detail modal */
     #detailModal {
       display: block !important;
@@ -539,8 +555,18 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
     .section { 
       break-inside: avoid; 
       page-break-inside: avoid;
-      margin-bottom: 16px !important;
+      margin-bottom: 8px !important;
     }
+    
+    /* Compact typography */
+    .modal-title { font-size: 18px !important; margin-bottom: 4px !important; }
+    .modal-subtitle { font-size: 11px !important; margin-bottom: 8px !important; }
+    .section-title { font-size: 13px !important; padding-bottom: 3px !important; margin-bottom: 6px !important; }
+    .ing-table th, .ing-table td { padding: 4px 8px !important; font-size: 11px !important; }
+    .step-text-content { margin-bottom: 6px !important; font-size: 11px !important; line-height: 1.4 !important; }
+    .step-number-badge { width: 22px !important; height: 22px !important; font-size: 11px !important; margin-right: 8px !important; }
+    .step-image-detail { max-width: 90px !important; max-height: 90px !important; margin: 4px 8px 4px 0 !important; }
+    .section img { max-width: 180px !important; max-height: 120px !important; margin: 4px auto !important; }
     
     /* Color preservation */
     * { 
