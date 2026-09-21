@@ -8979,57 +8979,69 @@ function calculateRecipeCost(recipe) {
 }
 
 function printSOP() {
-  // Dynamically hide cost elements before printing
-  const hideElements = () => {
-    // Hide total cost and cost per serving
-    document.querySelectorAll('#totalCost, #costPerServing, #detailTotalCost').forEach(el => {
-      el.style.display = 'none';
-    });
-    
-    // Hide cost columns in ingredients table
-    document.querySelectorAll('.ing-table th:nth-child(4), .ing-table td:nth-child(4)').forEach(el => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll('.ing-table th:nth-child(5), .ing-table td:nth-child(5)').forEach(el => {
-      el.style.display = 'none';
-    });
-    
-    // Hide cost-item that contains Total Cost and Cost per Serving
-    document.querySelectorAll('.cost-item').forEach(el => {
-      const label = el.querySelector('.label');
-      if (label && (label.textContent.includes('Total Cost') || label.textContent.includes('Cost per Serving'))) {
-        el.style.display = 'none';
-      }
-    });
-    
-    // Ensure images are visible
-    document.querySelectorAll('.step-image-detail, .section img').forEach(img => {
-      img.style.display = 'block';
-    });
-  };
+  // Get current recipe
+  if (!currentRecipe) return;
+  const r = currentRecipe;
   
-  // Show elements back after printing
-  const showElements = () => {
-    document.querySelectorAll('#totalCost, #costPerServing, #detailTotalCost').forEach(el => {
-      el.style.display = '';
-    });
-    document.querySelectorAll('.ing-table th:nth-child(4), .ing-table td:nth-child(4)').forEach(el => {
-      el.style.display = '';
-    });
-    document.querySelectorAll('.ing-table th:nth-child(5), .ing-table td:nth-child(5)').forEach(el => {
-      el.style.display = '';
-    });
-    document.querySelectorAll('.cost-item').forEach(el => {
-      el.style.display = '';
-    });
-    document.querySelectorAll('.step-image-detail, .section img').forEach(img => {
-      img.style.display = '';
-    });
-  };
-  
-  hideElements();
-  window.print();
-  setTimeout(showElements, 500);
+  // Create a clean print document
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>${r.name}</title>
+      <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .print-cover { text-align: center; margin-bottom: 15px; }
+        .print-cover img { max-width: 200px; max-height: 150px; border-radius: 8px; }
+        .print-title { font-size: 20px; color: #D35400; font-weight: bold; text-align: center; margin-bottom: 10px; }
+        .print-subtitle { font-size: 12px; color: #666; text-align: center; margin-bottom: 15px; }
+        .print-section { margin-bottom: 12px; }
+        .print-section-title { font-size: 14px; color: #D35400; border-bottom: 2px solid #F39C12; padding-bottom: 3px; margin-bottom: 6px; font-weight: bold; }
+        .print-ingredients { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .print-ingredients th { background: #FDF2E9; color: #D35400; padding: 5px 8px; text-align: left; font-size: 12px; }
+        .print-ingredients td { padding: 5px 8px; border-bottom: 1px solid #EEE; font-size: 12px; }
+        .print-step { display: flex; align-items: flex-start; margin-bottom: 6px; }
+        .print-step-number { background: #D35400; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; margin-right: 8px; flex-shrink: 0; }
+        .print-step-text { font-size: 12px; line-height: 1.4; flex: 1; }
+        .print-step-img { width: 80px; height: 80px; border-radius: 6px; object-fit: cover; margin-right: 8px; }
+      </style>
+    </head>
+    <body>
+      ${r.coverImage ? `<div class="print-cover"><img src="${r.coverImage}" alt="${r.name}"></div>` : ''}
+      <div class="print-title">${r.name}</div>
+      <div class="print-subtitle">${getCategoryName(r.category)} • ${r.yield} serving(s)</div>
+      
+      <div class="print-section">
+        <div class="print-section-title">📋 Ingredients</div>
+        <table class="print-ingredients">
+          <thead><tr><th>Qty</th><th>Unit</th><th>Ingredient</th></tr></thead>
+          <tbody>
+            ${r.ingredients.map(ing => `<tr><td>${ing.qty}</td><td>${ing.unit}</td><td>${ing.name}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="print-section">
+        <div class="print-section-title">👨‍🍳 Cooking Steps</div>
+        ${r.steps.map((step, idx) => {
+          const stepText = typeof step === 'string' ? step : (step.text || '');
+          const stepImage = typeof step === 'string' ? '' : (step.image || '');
+          return `<div class="print-step">
+            <div class="print-step-number">${idx + 1}</div>
+            ${stepImage ? `<img src="${stepImage}" class="print-step-img" alt="Step ${idx + 1}">` : ''}
+            <div class="print-step-text">${stepText}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+  }, 500);
 }
 
 function exportCurrentRecipe() {
