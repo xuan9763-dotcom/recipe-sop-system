@@ -13396,7 +13396,15 @@ function getAllRecipes() {
     const override = store.overrides[r.id];
     return override ? {...r, ...override, _edited: true} : {...r};
   });
-  recipes = recipes.concat(store.customRecipes.map(r => ({...r, _custom: true})));
+  
+  // Deduplicate: skip customRecipes that already exist in BUILTIN_RECIPES (by ID or name)
+  const builtinIds = new Set(BUILTIN_RECIPES.map(r => r.id));
+  const builtinNames = new Set(BUILTIN_RECIPES.map(r => r.name.toLowerCase().trim()));
+  const uniqueCustom = store.customRecipes.filter(r => 
+    !builtinIds.has(r.id) && !builtinNames.has(r.name.toLowerCase().trim())
+  );
+  recipes = recipes.concat(uniqueCustom.map(r => ({...r, _custom: true})));
+  
   // Filter out deleted recipes
   if (store.deletedRecipes) {
     recipes = recipes.filter(r => !store.deletedRecipes.includes(r.id));
