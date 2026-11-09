@@ -81,6 +81,12 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
   .cat-btn .count { background: rgba(0,0,0,0.1); padding: 1px 7px; border-radius: 10px; font-size: 11px; }
   .cat-btn.active .count { background: rgba(255,255,255,0.25); }
   .cat-btn.custom-cat { border-style: dashed; }
+  .cat-btn.top10-cat { border-color: #D4AF37; font-weight: 700; }
+  .cat-btn.top10-cat.active { background: linear-gradient(135deg, #D4AF37, #B8860B); border-color: #B8860B; color: #fff; }
+  .cat-btn.top10-cat.active .count { background: rgba(255,255,255,0.25); }
+  .card-action-btn.star:hover { background: #F1C40F; color: #fff; }
+  .card-action-btn.star.on { color: #F1C40F; }
+  .rank-badge { position: absolute; top: 6px; left: 6px; z-index: 3; background: rgba(0,0,0,0.72); color: #FFD700; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 10px; letter-spacing: .5px; }
   .cat-add-btn {
     padding: 7px 12px; border: 1px dashed var(--accent); border-radius: 20px;
     background: transparent; color: var(--accent); font-size: 13px; cursor: pointer;
@@ -13212,6 +13218,11 @@ const BUILTIN_RECIPES = [
 const BUILTIN_CATEGORIES = [
 
   {
+    "id": "top10",
+    "name": "Top 10",
+    "icon": "⭐"
+  },
+  {
     "id": "all",
     "name": "All",
     "icon": "🍽️"
@@ -13346,22 +13357,35 @@ const BUILTIN_CATEGORIES = [
 
 const BUILTIN_UNITS = ["g", "ml", "pcs", "kg", "L", "tsp", "tbsp", "cup", "slice", "portion", "sprigs", "pinch", "pack", "bottle", "box", "bunch", "clove", "stick", "sheet", "can", "gm"];
 
+// Top 10 curated list (order = rank shown in the Top 10 tab)
+const TOP10_DEFAULT = ["b14", "b13", "b15", "b4", "b107", "b31", "b96", "b25", "b104", "b47"];
+
 const STORAGE_KEY = 'recipe_sop_store_v3';
 
 // ========== State ==========
-let currentCategory = 'all';
+let currentCategory = 'top10';
 let currentRecipe = null;
 let editingRecipeId = null;
 let store = loadStore();
 
+function normalizeStore(s) {
+  const st = (s && typeof s === 'object') ? s : {};
+  if (!Array.isArray(st.customRecipes)) st.customRecipes = [];
+  if (!st.overrides || typeof st.overrides !== 'object') st.overrides = {};
+  if (!Array.isArray(st.categories)) st.categories = [];
+  if (!Array.isArray(st.units)) st.units = [];
+  if (!Array.isArray(st.deletedRecipes)) st.deletedRecipes = [];
+  if (!Array.isArray(st.top10)) st.top10 = TOP10_DEFAULT.slice();
+  return st;
+}
+
 function loadStore() {
   try {
     const s = localStorage.getItem(STORAGE_KEY);
-    if (s) return JSON.parse(s);
+    if (s) return normalizeStore(JSON.parse(s));
   } catch(e) {}
-  return { customRecipes: [], overrides: {}, categories: [], units: [] };
+  return normalizeStore({ customRecipes: [], overrides: {}, categories: [], units: [] });
 }
-
 function saveStore() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
 }
@@ -13423,6 +13447,39 @@ function getRecipeById(id) {
   return getAllRecipes().find(r => r.id === id);
 }
 
+// ========== Top 10 Helpers ==========
+function getTop10Ids() {
+  return (store.top10 || []).slice();
+}
+
+function getTop10Recipes() {
+  const all = getAllRecipes();
+  return getTop10Ids().map(id => all.find(r => r.id === id)).filter(Boolean);
+}
+
+function isInTop10(id) {
+  return getTop10Ids().includes(id);
+}
+
+function toggleTop10(id) {
+  let ids = getTop10Ids();
+  if (ids.includes(id)) {
+    ids = ids.filter(x => x !== id);
+    showToast('Removed from Top 10.', 'success', 2500);
+  } else {
+    if (ids.length >= 10) {
+      showToast('Top 10 is full (10 items). Remove one first.', 'error', 4000);
+      return;
+    }
+    ids.push(id);
+    showToast('Added to Top 10 (#' + ids.length + ').', 'success', 2500);
+  }
+  store.top10 = ids;
+  saveStore();
+  renderCategories();
+  renderGrid();
+}
+
 // ========== Rendering ==========
 function renderCategories() {
   const bar = document.getElementById('categoryBar');
@@ -13432,15 +13489,16 @@ function renderCategories() {
   let html = '';
   // Built-in category name translations
   const catTranslations = {
-    en: { all: 'All', pasta: 'Pasta', chop: 'Chops & Grill', seafood: 'Seafood', combo: 'Combo Sets', breakfast: 'Breakfast & Brunch', soup: 'Soups', local: 'Local Delights', rice: 'Rice Bowls & Fried Rice', japanese: 'Japanese', salad: 'Salads', snacks: 'Snacks & Sides', kids: 'Kids Meal', sauces: 'Sauces & Dips', ayamgepuk: 'Ayam Gepuk', other: 'Others' },
-    zh: { all: '全部', pasta: '意面', chop: '扒类', seafood: '海鲜', combo: '套餐', breakfast: '早餐', soup: '汤类', local: '本地美食', rice: '饭类', japanese: '日式', salad: '沙拉', snacks: '小吃', kids: '儿童餐', sauces: '酱料', ayamgepuk: '印尼炸鸡', other: '其他' }
+    en: { top10: 'Top 10', all: 'All', pasta: 'Pasta', chop: 'Chops & Grill', seafood: 'Seafood', combo: 'Combo Sets', breakfast: 'Breakfast & Brunch', soup: 'Soups', local: 'Local Delights', rice: 'Rice Bowls & Fried Rice', japanese: 'Japanese', salad: 'Salads', snacks: 'Snacks & Sides', kids: 'Kids Meal', sauces: 'Sauces & Dips', ayamgepuk: 'Ayam Gepuk', other: 'Others' },
+    zh: { top10: 'Top 10 精选', all: '全部', pasta: '意面', chop: '扒类', seafood: '海鲜', combo: '套餐', breakfast: '早餐', soup: '汤类', local: '本地美食', rice: '饭类', japanese: '日式', salad: '沙拉', snacks: '小吃', kids: '儿童餐', sauces: '酱料', ayamgepuk: '印尼炸鸡', other: '其他' }
   };
   
+  const top10Count = getTop10Recipes().length;
   cats.forEach(cat => {
-    const count = cat.id === 'all' ? allRecipes.length : allRecipes.filter(r => r.category === cat.id).length;
+    const count = cat.id === 'all' ? allRecipes.length : (cat.id === 'top10' ? top10Count : allRecipes.filter(r => r.category === cat.id).length);
     const isCustom = store.categories.find(c => c.id === cat.id);
     const displayName = isCustom ? cat.name : (catTranslations[currentLang]?.[cat.id] || cat.name);
-    html += `<button class="cat-btn ${currentCategory === cat.id ? 'active' : ''} ${isCustom ? 'custom-cat' : ''}" onclick="setCategory('${cat.id}')">
+    html += `<button class="cat-btn ${currentCategory === cat.id ? 'active' : ''} ${isCustom ? 'custom-cat' : ''} ${cat.id === 'top10' ? 'top10-cat' : ''}" onclick="setCategory('${cat.id}')">
       ${cat.icon} ${displayName} <span class="count">${count}</span>
     </button>`;
   });
@@ -13461,7 +13519,9 @@ function renderGrid() {
   
   let recipes = getAllRecipes();
   
-  if (currentCategory !== 'all') {
+  if (currentCategory === 'top10') {
+    recipes = getTop10Recipes();
+  } else if (currentCategory !== 'all') {
     recipes = recipes.filter(r => r.category === currentCategory);
   }
   
@@ -13483,9 +13543,10 @@ function renderGrid() {
   
   empty.style.display = 'none';
   
-  grid.innerHTML = recipes.map(r => `
+  grid.innerHTML = recipes.map((r, idx) => `
     <div class="recipe-card" onclick="openDetail('${r.id}')">
       <div class="card-banner ${r.category}">
+        ${currentCategory === 'top10' ? `<span class="rank-badge">#${idx + 1}</span>` : ''}
         ${r.coverImage ? `<img src="${r.coverImage}" class="card-cover-img" alt="${r.name}">` : `<span style="font-size:48px;">${r.icon || '🍽️'}</span>`}
         ${r._custom ? '<span class="card-tag custom-tag">Custom</span>' : ''}
         ${r._edited ? '<span class="card-tag edited-tag">Edited</span>' : ''}
@@ -13503,6 +13564,7 @@ function renderGrid() {
         ${r._edited ? `<button class="card-action-btn reset" title="Reset" onclick="resetRecipe('${r.id}')">↺</button>` : ''}
         <button class="card-action-btn copy" title="Duplicate" onclick="duplicateRecipe('${r.id}')">📋</button>
         <button class="card-action-btn edit" title="Edit" onclick="editRecipe('${r.id}')">✏️</button>
+        <button class="card-action-btn star ${isInTop10(r.id) ? 'on' : ''}" title="${isInTop10(r.id) ? 'Remove from Top 10' : 'Add to Top 10'}" onclick="toggleTop10('${r.id}')">${isInTop10(r.id) ? '⭐' : '☆'}</button>
         <button class="card-action-btn delete subtle" title="Delete" onclick="deleteRecipe('${r.id}')">🗑️</button>
       </div>
     </div>
@@ -13784,7 +13846,7 @@ function openAddForm() {
   
   // Populate category select
   const catSelect = document.getElementById('formCategory');
-  catSelect.innerHTML = getAllCategories().filter(c => c.id !== 'all').map(c => 
+  catSelect.innerHTML = getAllCategories().filter(c => c.id !== 'all' && c.id !== 'top10').map(c => 
     `<option value="${c.id}">${c.icon} ${c.name}</option>`
   ).join('');
   
@@ -13819,7 +13881,7 @@ function editRecipe(id) {
   document.getElementById('formCookTime').value = r.cookTime;
   
   const catSelect = document.getElementById('formCategory');
-  catSelect.innerHTML = getAllCategories().filter(c => c.id !== 'all').map(c => 
+  catSelect.innerHTML = getAllCategories().filter(c => c.id !== 'all' && c.id !== 'top10').map(c => 
     `<option value="${c.id}" ${c.id === r.category ? 'selected' : ''}>${c.icon} ${c.name}</option>`
   ).join('');
   
@@ -14260,7 +14322,10 @@ function changeCoverImage(id) {
 
 function exportCurrentCategory() {
   let recipes = getAllRecipes();
-  if (currentCategory !== 'all') {
+  if (currentCategory === 'top10') {
+    recipes = getTop10Recipes();
+    showToast('Exporting ' + recipes.length + ' recipes from Top 10', 'success');
+  } else if (currentCategory !== 'all') {
     recipes = recipes.filter(r => r.category === currentCategory);
     showToast('Exporting ' + recipes.length + ' recipes from current category', 'success');
   } else {
@@ -14443,7 +14508,7 @@ function exportToExcel(recipes) {
     tocHeights.push({ hpt: 10 });
     
     // Group recipes by category
-    const categories = getAllCategories().filter(c => c.id !== 'all');
+    const categories = getAllCategories().filter(c => c.id !== 'all' && c.id !== 'top10');
     let tocRow = 3;
     let recipeCounter = 0;
     
@@ -15083,7 +15148,7 @@ function restoreData(event) {
         event.target.value = '';
         return;
       }
-      store = data.store;
+      store = normalizeStore(data.store);
       saveStore();
       renderCategories();
       renderGrid();
