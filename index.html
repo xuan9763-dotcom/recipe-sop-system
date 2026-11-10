@@ -819,12 +819,15 @@ var XLSX={};function make_xlsx_lib(a){a.version="0.18.5",a.style_version="1.2.0"
   border-bottom: none;
 }
 .step-image-detail {
-  width: 140px;
-  height: 140px;
+  width: auto;
+  height: auto;
+  max-width: 260px;
+  max-height: 200px;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
   border: 2px solid #e8e8e8;
   flex-shrink: 0;
+  background: #fafafa;
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -16174,7 +16177,7 @@ function printSOP() {
         .print-step { display: flex; align-items: flex-start; margin-bottom: 6px; }
         .print-step-number { background: #D35400; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; margin-right: 8px; flex-shrink: 0; }
         .print-step-text { font-size: 12px; line-height: 1.4; flex: 1; }
-        .print-step-img { width: 80px; height: 80px; border-radius: 6px; object-fit: cover; margin-right: 8px; }
+        .print-step-img { width: auto; height: auto; max-width: 95px; max-height: 110px; border-radius: 6px; object-fit: contain; margin-right: 8px; }
         .print-video { position: absolute; top: 20px; right: 0; width: 150px; text-align: center; }
         .print-video-qr svg { width: 64px; height: 64px; margin: 0 auto; display: block; }
         .print-video-text { font-size: 9px; color: #666; word-break: break-all; line-height: 1.3; }
