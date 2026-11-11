@@ -17578,4 +17578,103 @@ renderGrid();
 <div class="toast-container" id="toastContainer"></div>
 
 
+<script>
+/* ---------- Edit lock: password gate for modifying actions ---------- */
+(function () {
+  var SALT = "recipe-sop::";
+  var HASH = "b0e20717";
+  var unlocked = false;
+  var pending = null;
+  var overlay = null;
+
+  function fnv(str) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) {
+      h = Math.imul(h ^ str.charCodeAt(i), 0x01000193) >>> 0;
+    }
+    return ("00000000" + h.toString(16)).slice(-8);
+  }
+
+  function buildUI() {
+    if (overlay) return overlay;
+    overlay = document.createElement("div");
+    overlay.id = "editLockOverlay";
+    overlay.style.cssText = "display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:99999;align-items:center;justify-content:center;padding:16px;";
+    overlay.innerHTML =
+      '<div style="background:#fff;border-radius:16px;padding:24px;width:340px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.28);font-family:inherit;">' +
+        '<div style="font-size:17px;font-weight:700;color:#111827;margin-bottom:6px;">🔒 需要密码 / Password required</div>' +
+        '<div style="font-size:13px;color:#6b7280;line-height:1.5;margin-bottom:14px;">修改食谱前请输入密码。<br>Enter the password to add, edit, delete or import recipes.</div>' +
+        '<input id="editLockPw" type="password" autocomplete="off" placeholder="Password" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;outline:none;">' +
+        '<div id="editLockErr" style="height:18px;font-size:12px;color:#dc2626;margin-top:6px;"></div>' +
+        '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">' +
+          '<button id="editLockCancel" type="button" style="padding:9px 16px;border:1px solid #d1d5db;background:#fff;border-radius:10px;cursor:pointer;">取消</button>' +
+          '<button id="editLockOk" type="button" style="padding:9px 16px;border:0;background:#2563eb;color:#fff;border-radius:10px;cursor:pointer;font-weight:600;">解锁</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    document.getElementById("editLockCancel").onclick = closeLock;
+    document.getElementById("editLockOk").onclick = tryUnlock;
+    document.getElementById("editLockPw").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); tryUnlock(); }
+      if (e.key === "Escape") { e.preventDefault(); closeLock(); }
+    });
+    overlay.addEventListener("mousedown", function (e) { if (e.target === overlay) closeLock(); });
+    return overlay;
+  }
+
+  function openLock(cb) {
+    pending = cb;
+    buildUI();
+    overlay.style.display = "flex";
+    var inp = document.getElementById("editLockPw");
+    inp.value = "";
+    document.getElementById("editLockErr").textContent = "";
+    setTimeout(function () { inp.focus(); }, 60);
+  }
+
+  function closeLock() {
+    pending = null;
+    if (overlay) overlay.style.display = "none";
+  }
+
+  function tryUnlock() {
+    var inp = document.getElementById("editLockPw");
+    var err = document.getElementById("editLockErr");
+    if (fnv(SALT + inp.value) === HASH) {
+      unlocked = true;
+      var cb = pending;
+      pending = null;
+      overlay.style.display = "none";
+      if (typeof showToast === "function") showToast("已解锁 / Unlocked", "success", 2500);
+      if (cb) cb();
+    } else {
+      err.textContent = "密码错误，请重试 / Wrong password";
+      inp.value = "";
+      inp.focus();
+    }
+  }
+
+  function guard(name) {
+    var orig = window[name];
+    if (typeof orig !== "function") return;
+    window[name] = function () {
+      var self = this, args = arguments;
+      if (unlocked) return orig.apply(self, args);
+      openLock(function () { orig.apply(self, args); });
+      return false;
+    };
+  }
+
+  [
+    "openAddForm", "editRecipe", "editCurrentRecipe",
+    "duplicateRecipe", "duplicateCurrentRecipe",
+    "deleteRecipe", "resetRecipe", "saveRecipe",
+    "toggleTop10", "openCatModal", "addCategory",
+    "confirmImport", "importFromExcel", "restoreData"
+  ].forEach(guard);
+
+  window.isEditUnlocked = function () { return unlocked; };
+  window.lockEdits = function () { unlocked = false; closeLock(); };
+})();
+</script>
 </body></html>
